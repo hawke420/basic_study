@@ -18,6 +18,18 @@
 
 404 NOT FOUND
 
+
+### 上传到自己的github上
+```
+删除clone的仓库下的.git文件
+然后 git init
+git add .
+git --config ...(邮箱，用户名)
+git commit 
+git remote add origin/main(分支名字) url(远程的仓库的地址)
+git push
+```
+
 ### 一些问题 
 url.parse 为什么要用{query,pathname}来接收？
 
