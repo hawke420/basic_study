@@ -145,4 +145,30 @@ process.env.UV_THREADPOOL_SIZE = 2;
 3215 password encrypted
 ```
 
-### 事件触发机制
+### 事件触发机制 事件驱动架构
+
+Event emitter --emits events--> Event listener --calls--> Attached callback function
+服务器其实是一个 nodejs 中的一个实例 EventEmitter 类，继承了监听并且触发事件（request 事件）的能力。 这种 nodejs 的架构是基于观察者模式。
+
+```
+// 注册事件监听器，这个server就是一个实例类
+server.on('request', (request, response) => {
+  console.log('Request received');
+  response.writeHead(200, { 'Content-Type': 'text/plain' });
+  response.end('Hello, world!');
+});
+```
+
+在事件驱动的编程中，你可以根据需要选择是否在事件触发时传递参数，以便监听器能够获取事件相关的信息。
+
+```
+myEmitter.on("newSale", () => {
+  console.log("Happy shopping~");
+});
+myEmitter.on("newSale", (clock) => {
+  console.log(`The activity start on ${clock} o'clock`);
+});
+
+myEmitter.emit("newSale", 9); // 即使只有这个，即使有事件监听没有接受参数也可以被触发
+
+```

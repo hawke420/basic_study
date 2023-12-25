@@ -38,7 +38,7 @@ fs.readFile("../starter/test-file.txt", "utf-8", (err, data) => {
   crypto.pbkdf2Sync("password", "salt", 100000, 1024, "sha512");
   console.log(Date.now() - start, "password encrypted");
   crypto.pbkdf2Sync("password", "salt", 100000, 1024, "sha512");
-  console.log(Date.now() - start, "password encrypted"); // 这样的同步方法阻塞了事件循环
+  console.log(Date.now() - start, "password encrypted"); // 这样的同步方法阻塞了事件循环，这些代码不属于事件循环中的部分
 });
 
 setImmediate(() => console.log("Immediate 3 finished"));
