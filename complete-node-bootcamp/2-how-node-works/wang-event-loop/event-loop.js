@@ -31,8 +31,14 @@ fs.readFile("../starter/test-file.txt", "utf-8", (err, data) => {
   // crypto.pbkdf2("password", "salt", 100000, 1024, "sha512", () => {
   //   console.log(Date.now() - start, "password encrypted");
   // });
-  crypto.pbkdf2("password", "salt", 100000, 1024, "sha512");
+  crypto.pbkdf2Sync("password", "salt", 100000, 1024, "sha512");
   console.log(Date.now() - start, "password encrypted");
+  crypto.pbkdf2Sync("password", "salt", 100000, 1024, "sha512");
+  console.log(Date.now() - start, "password encrypted");
+  crypto.pbkdf2Sync("password", "salt", 100000, 1024, "sha512");
+  console.log(Date.now() - start, "password encrypted");
+  crypto.pbkdf2Sync("password", "salt", 100000, 1024, "sha512");
+  console.log(Date.now() - start, "password encrypted"); // 这样的同步方法阻塞了事件循环
 });
 
 setImmediate(() => console.log("Immediate 3 finished"));
