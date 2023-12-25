@@ -117,5 +117,7 @@ initialize program -> execute top-level code -> require modules -> register even
 
 所有的应用程序代码都是在回调函数内部执行（除了 top-level code），也有可能部分代码会从事件循环中 offload 到线程池中。
 事件循环有多个阶段，每个阶段都有一个回调队列，用来接受事件的回调。
+事件循环的顺序：程序运行 -> setTimeout -> I/O -> setImmediate -> close callbacks
+其中 nextTick 会插队在事件循环中 ，而不是一个 tick 后（相反 setImmediate 更像是一个 tick 后，而不是立即），它是一个微任务。微任务是在事件循环的不同阶段之间执行的任务，其优先级比宏任务（例如 setTimeout、setImmediate、I/O 操作等）更高。
 
 ### 事件触发机制
