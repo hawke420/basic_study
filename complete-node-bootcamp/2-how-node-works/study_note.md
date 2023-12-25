@@ -120,4 +120,29 @@ initialize program -> execute top-level code -> require modules -> register even
 事件循环的顺序：程序运行 -> setTimeout -> I/O -> setImmediate -> close callbacks
 其中 nextTick 会插队在事件循环中 ，而不是一个 tick 后（相反 setImmediate 更像是一个 tick 后，而不是立即），它是一个微任务。微任务是在事件循环的不同阶段之间执行的任务，其优先级比宏任务（例如 setTimeout、setImmediate、I/O 操作等）更高。
 
+### 查看线程池的好处，如何改变线程池的大小
+
+```
+默认情况——四个几乎同时完成
+2804 password encrypted
+2819 password encrypted
+2970 password encrypted
+2974 password encrypted
+```
+
+```
+设置 线程池的大小为1->4 观察变化
+process.env.UV_THREADPOOL_SIZE = 1;
+1583 password encrypted
+3082 password encrypted
+4686 password encrypted
+6322 password encrypted
+
+process.env.UV_THREADPOOL_SIZE = 2;
+1653 password encrypted
+1688 password encrypted
+3163 password encrypted
+3215 password encrypted
+```
+
 ### 事件触发机制
