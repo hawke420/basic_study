@@ -1,4 +1,4 @@
-## day3，4
+## day3，4，5
 
 ### npm 是什么
 
@@ -187,3 +187,51 @@ server.on 主要用于注册事件监听器，处理服务器生命周期事件�
 
 500 网络服务器错误
 对于客户端而言，当收到 404 错误时，通常会认为是客户端的请求出现了问题，而当收到 500 错误时，通常会认为是服务器端出现了问题。
+
+### 模块的区别
+
+CommonJS module system : nodejs 中常见 require(),exports or module.exports
+ES module system : 通常使用在浏览器中 import/export
+现在有方法尝试将 ES 模块使用在 nodejs 中 .mjs
+
+### 调用 require 函数的模块的过程
+
+#### 路径解析 RESOLVING&LOADING
+
+1. 查询 core modules
+2. ./ ../ 类似的开头是在尝试加载 developer module
+3. 如果没有找到文件，就会尝试在 index.js 的文件下寻找
+4. 去 node_modules 里面尝试找模块
+
+#### 打包 WRAPPING
+
+模块的代码会被包装成一个特殊的函数（从模块中移除后进行包装。在 Node.js 中，模块的代码不会在模块被引入时立即执行。相反，它会被包装在一个函数内，以便提供一个局部的作用域，并通过该函数的参数来模拟模块的上下文。）
+
+```
+function(exports,require,module,\_\_filename,\_\_dirname){
+// Module code live here...
+}
+```
+
+```
+在js文件中验证上述的理论
+console.log(require("module").wrapper);
+[
+  '(function (exports, require, module, __filename, __dirname) { ',
+  '\n});'
+]
+```
+
+这些参数就像是全局变量，被注入到每个模块中，每个模块都有自己的私有范围。
+require : function to require modules ,
+module : reference to the current module
+exports : a reference to module exports , used to export object from a module ,
+filename : absolute path of the current module's filedirname : directory name of the current module
+
+#### 执行 EXECUTION
+
+#### 返回模块的输出 RETURNING EXPORTS
+
+require 函数会返回需要的模块的输出，而模块是通过 module.exports 进行对象的返回。
+
+#### 存入 CACHE
