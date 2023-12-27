@@ -87,17 +87,18 @@ readF(`${__dirname}/../starter/dog.txt`)
   .then((pic) => {
     // 下一个链接的还是then，处理下一个Promise 解决
     console.log(pic.body.message);
-    writeF(`./photo_source.txt`, pic.body.message)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // writeF(`./photo_source.txt`, pic.body.message)
+    //   .then((res) => {
+    //     console.log(res);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
+    return writeF(`./photo_source.txt`, pic.body.message);
+  })
+  .then((res) => {
+    console.log(res);
   })
   .catch((err) => {
     console.log(err.message);
-  })
-  .catch((err) => {
-    console.log(err);
   });

@@ -1,3 +1,5 @@
+## day6
+
 ### superagent
 
 npm i superagent
@@ -17,3 +19,11 @@ const readF = (file) => {
   });
 };
 ```
+
+### 解决回调地狱
+
+通过每次对原有的回调地狱进行改进，发现所有的 then 都可以链接在一起。实现的策略就是每次 then 返回的都是 Promise。且最后 catch 只需要存在一个，但是只会捕捉到第一个错误。
+async&await 是 ES8 引入到 javascript 中的一个特性。
+在 async 关键字函数体内的行为不会阻塞其他事件。也是自动返回一个 Promise。await 会等待直到 Promise 返回一个 solved 值。
+
+### Async 的实际工作原理
