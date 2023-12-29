@@ -12,6 +12,12 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../starter/dev-data/data/tours-simple.json`)
 );
 
+// 自定义中间件
+app.use((res, req, next) => {
+  console.log("execute for all request");
+  next();
+});
+
 // 1.GET：服务器发送数据给客户端，这个数据是全部的tours的信息
 app.get("/api/v1/tours", (req, res) => {
   res.status(200).json({
@@ -121,4 +127,3 @@ app.patch("/api/v1/tours/:id", (req, res) => {
 app.listen(port, () => {
   console.log(`App running on port http://${hostname}:${port}`);
 }); // 用来启动一个服务器
-
