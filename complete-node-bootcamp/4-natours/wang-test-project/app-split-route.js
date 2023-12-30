@@ -135,7 +135,8 @@ app.use("/api/v1/tours",tourRouter);
 app.use("/api/v1/users",userRouter);
 
 
-// 开始一个服务器
-app.listen(port, () => {
-    console.log(`App running on port http://${hostname}:${port}`);
-});
+module.exports = app;
+// // 开始一个服务器
+// app.listen(port, () => {
+//     console.log(`App running on port http://${hostname}:${port}`);
+// });

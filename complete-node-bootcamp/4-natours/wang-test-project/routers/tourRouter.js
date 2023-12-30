@@ -1,5 +1,7 @@
 const express = require("express");
 const fs = require("fs");
+
+/*
 const tours = JSON.parse(
 fs.readFileSync(`${__dirname}/../../starter/dev-data/data/tours-simple.json`)
 );
@@ -85,9 +87,12 @@ const updateTour = (req, res) => {
         }
     );
 };
-
+*/
 const router = express.Router();
-router.route("/").get(getAllTours).post(createTour);
-router.route("/:id").get(getTheTour).patch(updateTour);
+const tourFun = require("../controllers/tourController");
+router.param("id",tourFun.checkID); // 使用了中间件实现重复的逻辑
+// 也可以不全部导入 const {getAllTours , ...} = require("<PATH>");
+router.route("/").get(tourFun.getAllTours).post(tourFun.createTour);
+router.route("/:id").get(tourFun.getTheTour).patch(tourFun.updateTour);
 
 module.exports = router;

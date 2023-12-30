@@ -124,6 +124,10 @@ app.patch("/api/v1/tours/:id", (req, res) => {
   );
 });
 
+module.exports = app;
+/*
+// 服务器被分离给了app-split-server.js
 app.listen(port, () => {
   console.log(`App running on port http://${hostname}:${port}`);
 }); // 用来启动一个服务器
+ */
