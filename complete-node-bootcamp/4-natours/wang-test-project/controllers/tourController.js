@@ -1,18 +1,27 @@
 const fs = require("fs");
 
 const tours = JSON.parse(
-    fs.readFileSync(
-        `${__dirname}/../update-dev-data/tours-simple.json`
-    )
+    fs.readFileSync(`${__dirname}/../update-dev-data/tours-simple.json`)
 );
 
 // 为了给路由添加中间件，实现判断id是否合理
 exports.checkID = (req, res, next, val) => {
-    const tour = tours.find((el) => el.id === 1*val);
+    const tour = tours.find((el) => el.id === 1 * val);
     if (!tour) {
         return res.status(404).json({
             status: "fail",
             message: "invalid request: excessive id.",
+        });
+    }
+    next();
+};
+
+// 限制创建新的tour必须指定price和name
+exports.checkNew = (req, res, next) => {
+    if (!req.body.price || !req.body.name) {
+        return res.status(400).json({
+            status: "fail",
+            message: "invalid request: missing name or price",
         });
     }
     next();

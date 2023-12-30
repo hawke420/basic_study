@@ -90,9 +90,12 @@ const updateTour = (req, res) => {
 */
 const router = express.Router();
 const tourFun = require("../controllers/tourController");
-router.param("id",tourFun.checkID); // 使用了中间件实现重复的逻辑
+router.param("id", tourFun.checkID); // 对所有存在id的路由使用了这个中间件，实现重复的逻辑
 // 也可以不全部导入 const {getAllTours , ...} = require("<PATH>");
-router.route("/").get(tourFun.getAllTours).post(tourFun.createTour);
+router
+    .route("/")
+    .get(tourFun.getAllTours)
+    .post(tourFun.checkNew, tourFun.createTour);
 router.route("/:id").get(tourFun.getTheTour).patch(tourFun.updateTour);
 
 module.exports = router;
