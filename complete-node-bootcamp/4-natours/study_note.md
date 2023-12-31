@@ -189,3 +189,156 @@ eslint-plugin-jsx-ally 是 jsx 的 eslint 规则
 eslint-plugin-react 是 react 的 eslint 规则
 
 这样的设置必须在本地完成，如果是全局可能会不工作
+
+### 关系型数据库和非关系性数据库
+
+MySQL, PostgreSQL, Oracle, Microsoft SQL Server, SQLite 是关系型数据库
+
+MongoDB, Redis, CouchDB, Cassandra, Neo4j 是非关系型数据库
+
+如何理解这个关系？
+
+关系是指数据之间的关系，比如说一个用户和他的订单，一个订单和他的商品，这些数据之间的关系就是关系型数据库的优势，而非关系型数据库则是没有这种关系的，他们之间的数据是独立的，没有关系的。
+
+假如说数据库中有一个文档（表），里面是关联了其他的文档（表），那么这个文档（表）就是关系型数据库，而如果这个文档（表）是独立的，没有关联其他的文档（表），那么这个文档（表）就是非关系型数据库。但是在非关系型数据可以优先考虑嵌入。
+
+在非关系型数据库如 MongoDB 中，"嵌入"是指在一个文档中直接包含其他文档的数据，而不是通过引用其他文档的方式来关联数据。这种方式可以提高查询效率，因为数据库可以在一次查询中获取所有需要的数据。
+
+### 数据库的使用
+
+选择的是 atlas 云服务托管我的数据库
+
+然后在云服务器上创建了 mongo 的客户端，并且在 atlas 设置了白名单 ip
+
+使用了 mongosh 来连接数据库，mongosh 按照官方在服务器上下载的。
+
+为了更好地使用数据库，在本地下载了 navaicat premium，作为一个数据库管理工具来连接云端的数据库。
+
+然后这个数据库连接存在一些问题：主要是还是先设置白名单，然后可以用 URI 来自动配置，然后这个 URI 可以通过参考 atlas 连接 shell 的方式
+
+```
+mongodb+srv://<username>:<password>@natours.pmdnytt.mongodb.net/
+然后password什么的还是要设置成username对应的密码，SSL不要选择认证就ok。
+```
+
+然后云服务器也有 mongo 客户端，我是设置了一个 alias 命令——mongo 调用。 然后进去的时候输入密码就可以。
+
+`alias mongo="mongosh "mongodb+srv://natours.pmdnytt.mongodb.net/" --apiVersion 1 --username hawke"`
+
+### mongodb 的基本操作
+
+```mongodb
+show dbs //显示所有的database
+use sample_natours //使用sample_natours database
+db.users.insertOne({name:"xiao",age:12}) // 在当前database中的users table中加入一个新的document
+db.users.insertMany([{},{}]) // 加入多个document
+```
+
+```mongodb
+db.tours.find() //在当前 database 中的 tours table中查找所有的数据
+db.tours.find({name: 'The Forest Hiker'}) //在当前 database 中的 tours table中查找 name 为 The Forest Hiker 的数据
+db.users.find({age:{$lte:25}}) // 查找所有age<=25的documents
+db.users.find({name:"yubao",age:{$lte:23}}) // 逗号表示 and，$lte表示小于等于（需要使用大括号俩表示对象，然后:分隔）
+db.users.find({$or:[{name:"yubao"},{age:{$gte:25}}]}) // or 的使用，注意 or 里面的对象需要使用中括号表示数组
+db.users.find({$or:[{name:"yubao"},{age:{$gte:25}}]},{name:1}) // 第二个参数表示只返回 name 这个属性，1 表示返回，0 表示不返回
+```
+
+```mongodb
+
+db.users.updateOne({name:"yubao"},{$set:{age:16}}) // 更新一个document，第一个参数是查询的条件，第二个参数是更新的内容，$set表示更新的内容
+db.users.updateMany({age:{$lte:18}},{$set:{age:-1}}) // 更新多个document
+```
+
+updateOne 和 updateMany 的第二个参数可以使用 $inc 来增加一个数值，$inc:{age:1} 表示 age 这个属性增加 1
+
+这两种方法的区别是，updateOne 只会更新第一个满足条件的 document，而 updateMany 会更新所有满足条件的 document。
+
+```mongodb
+db.users.replaceOne({name:"yubao"},{name:"xiaohuahua",age:18,sex:"male",job:true}) // 替换一个document，第一个参数是查询的条件，第二个参数是替换的内容。replaceMany不存在。
+```
+
+```mongodb
+db.users.deleteOne({name:"xiaohuahua"}) // 删除一个document
+db.users.deleteMany({age:{$lte:18}}) // 删除多个document
+```
+
+### mongoose
+
+mongoose 是一个 nodejs 中的库，用来操作 mongodb 的，它的作用是将 mongodb 的操作封装成了一个对象，然后可以通过这个对象来操作 mongodb。
+
+express 是对 node 的封装，mongoose 是对 mongodb 的封装。都属于抽象层。
+
+属于是 ODM 的一类库：Object Document Mapping，对象文档映射，将对象和文档进行映射，将对象转换成文档，然后存储到数据库中。
+
+可以实现更快更好地与数据库交互。
+
+提供了一些数据和关系建模的模式，可以更好实现数据的验证、简单的 API 查询和中间件功能。
+
+```npm
+npm i mongoose
+```
+
+### 关于配置问题
+
+通过在 mongodb atlas 的 connect 中选择 drivers 的方式,选择对应的 Node.js 方式。
+
+然后把`mongodb+srv://hawke:<password>@natours.pmdnytt.mongodb.net/?retryWrites=true&w=majority`
+中的<password>替换成设置的 USER_PASSWORD，可以在./net 后面加上对应的你想要链接到的数据库的名字，我这里是/sample_natours。如果这里不设置的话，就会默认给你创建一个 test 的数据库。
+
+### mongoose 的使用方法
+
+```nodejs
+const mongoose = require('mongoose');
+
+const DB = process.env.DATABASE.replace('<password>',process.env.USER_PASSWORD);
+mongoose.connect(DB,{
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false
+}).then((con) => {
+  console.log('DB connection successful!');
+}).catch(err => {
+  console.log(err);
+});
+```
+
+```
+// 创建一个schema，用来定义表的结构
+const tourSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, "don't miss name"],
+    unique: true // 这个属性必须是唯一，不可重复的
+  },
+  rating: {
+    type: Number,
+    default: 4.5
+  },
+  price: {
+    type: Number,
+    required: [true, "don't miss price"],
+    default: 0
+  }
+});
+```
+
+```
+// 这样就有了一个实例，但是还是空的不会显示在数据库中
+const Tours = mongoose.model('tours', tourSchema);
+```
+
+```
+// new了之后table tours就出现了
+const testTour = new Tours({
+  name: 'The Forest Hiker',
+  rating: 4.7,
+  price: 497
+});
+
+// 到这里才会真正保存到数据库中
+testTour.save().then(doc => {
+  console.log(doc);
+}).catch(err => {
+  console.log(“ERROR💥：”,err);
+});
+```
